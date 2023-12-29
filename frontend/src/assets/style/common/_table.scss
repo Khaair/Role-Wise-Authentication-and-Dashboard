@@ -1,0 +1,25 @@
+
+table{
+  border: 1px solid #ddd;
+}
+#customers td,
+#customers th {
+  border-bottom: 1px solid #ddd;
+  padding: 16px;
+
+}
+
+
+
+#customers tr:hover {
+  background-color: #ddd;
+}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #F9FAFB;
+  color: black;
+}
+
