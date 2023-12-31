@@ -3,30 +3,33 @@ import { Form, Input, notification } from "antd";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/actions/authActions";
 import { Link, useNavigate } from "react-router-dom";
+import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { useState } from "react";
+import { baseUrl } from "../../utils/api-url";
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [errorMsg, setErrorMsg] = useState([]);
 
   const sendDatatoApp = async () => {
     const values = await form.validateFields();
     try {
-      const res = await axios.post("https://reqres.in/api/login", {
-        email: values?.email,
+      const res = await axios.post(`${baseUrl}/auth/signin`, {
+        username: values?.userName,
         password: values?.password,
       });
 
-      console.log("resssss",res)
-
       if (res?.status === 200) {
-        dispatch(login(res?.data?.token));
+        dispatch(login(res?.data));
         navigate("/dashboard");
         openNotification();
-
-        console.log(res?.data, "response login");
+      } else {
+        setErrorMsg(res?.status);
       }
-     
-      console.log(res, "success result");
     } catch (er) {
+      if (er) {
+        setErrorMsg(er?.response?.data?.message);
+      }
       console.log(er);
     }
   };
@@ -34,7 +37,6 @@ function Login() {
   const [form] = Form.useForm();
 
   const [api, contextHolder] = notification.useNotification();
-
 
   const openNotification = () => {
     api.open({
@@ -44,7 +46,7 @@ function Login() {
 
   return (
     <>
-        {contextHolder}
+      {contextHolder}
       <section>
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
           <div className="w-full bg-white rounded-lg shadow-xl md:mt-0 sm:max-w-md xl:p-0">
@@ -68,51 +70,65 @@ function Login() {
                   />
                 </svg>
                 <h2 className="ml-3  font-inter text-4xl font-bold text-[#4E5D78] font-inter">
-                  Stack
+                SM Fintech
                 </h2>
               </a>
               <h2 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-              Sign In to continue with Stack
-              
+                Sign In to continue with SM Fintech
               </h2>
-              <Form form={form} layout="vertical">
-                <Form.Item
-                  name="email"
-                  label="User Name"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input the email!",
-                    },
-                  ]}
-                >
-                  <Input placeholder="Enter your email" />
-                </Form.Item>
-                <Form.Item
-                  label="Password"
-                  name="password"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input the password!",
-                    },
-                  ]}
-                >
-                  <Input placeholder="Enter your password" />
-                </Form.Item>
-
-
-                <Form.Item>
-                  <button
-                    onClick={sendDatatoApp}
-                    className="bg-[#6941C6] w-full hover:bg-[#7f5fc7] text-white font-bold py-2 px-4 rounded-lg mt-3"
+              <div className="form-wrapper-area">
+                <Form form={form} layout="vertical">
+                  <Form.Item
+                    name="userName"
+                    label="User Name"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input the user name!",
+                      },
+                    ]}
                   >
-                    Sign In
-                  </button>
-                </Form.Item>
-              </Form>
-              <h4>Don’t have an account? <Link to="/sign-up" className="text-[blue] cursor-pointer">Sign Up</Link></h4>
-            
+                    <Input placeholder="Enter your user name" />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input the password!",
+                      },
+                    ]}
+                  >
+                    <Input.Password
+                      className="bg-[#f1f4f7] border-none py-[8px]"
+                      placeholder="Enter your password"
+                      iconRender={(visible) =>
+                        visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                      }
+                    />
+                  </Form.Item>
+
+                  <p className="text-[red] mb-2">{errorMsg}</p>
+
+                  <Form.Item>
+                    <button
+                      onClick={sendDatatoApp}
+                      className="bg-[#6941C6] w-full hover:bg-[#7f5fc7] text-white font-bold py-2 px-4 rounded-lg mt-3"
+                    >
+                      Sign In
+                    </button>
+                  </Form.Item>
+                </Form>
+              </div>
+
+              <h4>
+                Don’t have an account?{" "}
+                <Link to="/" className="text-[blue] cursor-pointer">
+                  Sign Up
+                </Link>
+              </h4>
             </div>
           </div>
         </div>

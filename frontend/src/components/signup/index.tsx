@@ -1,10 +1,13 @@
 import axios from "axios";
 import { Form, Input, Select } from "antd";
-import { Link } from "react-router-dom";
 import { notification } from "antd";
 import { useState } from "react";
-function SignUp() {
+import { Link, useNavigate } from "react-router-dom";
+import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import { baseUrl } from "../../utils/api-url";
 
+
+function SignUp() {
   const [selectvalue, setSelectValue] = useState("user");
   const [errorMsg, setErrorMsg] = useState([]);
   const [matchedEmailerrorMsg, setMatchedEmailErrorMsg] = useState("");
@@ -14,14 +17,14 @@ function SignUp() {
   const handleChange = (newValue: any) => {
     setSelectValue(newValue);
   };
+  const navigate = useNavigate();
 
   const [form] = Form.useForm();
-
 
   const sendDatatoApp = async () => {
     const values = await form.validateFields();
     try {
-      let res = await axios.post("http://localhost:8080/api/auth/signup", {
+      let res = await axios.post(`${baseUrl}/auth/signup`, {
         username: values?.username,
         email: values?.email,
         password: values?.password,
@@ -33,6 +36,8 @@ function SignUp() {
         setMatchedErrorMsg("Registration successful");
         setMatchedUserErrorMsg("");
         setMatchedEmailErrorMsg("");
+        openNotification();
+        navigate("/login");
       } else {
         setErrorMsg(res.status);
       }
@@ -53,13 +58,21 @@ function SignUp() {
     }
   };
 
-
   const [api, contextHolder] = notification.useNotification();
 
   const openNotification = () => {
     api.open({
       message: "Registration Successful!",
     });
+  };
+
+  const validateEmail = (rule, value, callback) => {
+    const emailRegex = /^[A-Za-z0-9+_.-]+@(.+)$/;
+    if (!emailRegex.test(value)) {
+      callback('Invalid email address');
+    } else {
+      callback();
+    }
   };
 
   return (
@@ -88,109 +101,116 @@ function SignUp() {
                   />
                 </svg>
                 <h2 className="ml-3  font-inter text-4xl font-bold text-[#4E5D78] font-inter">
-                  Stack
+                SM Fintech
                 </h2>
               </a>
               <h2 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-                Sign up to join with Stack
+                Sign up to join with SM Fintech
               </h2>
-              <Form form={form} layout="vertical">
-                <Form.Item
-                  name="username"
-                  label="User Name"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input the username!",
-                    },
-                  ]}
-                >
-                  <Input placeholder="User Name" />
-                </Form.Item>
-                <p className="text-[red]">{matchedUsererrorMsg}</p>
-                <Form.Item
-                  label="Email"
-                  name="email"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input the email!",
-                    },
-                  ]}
-                >
-                  <Input placeholder="Email" />
-                </Form.Item>
-                <p className="text-[red] ">{matchedEmailerrorMsg}</p>
+              <div className="form-wrapper-area">
+                <Form form={form} layout="vertical">
+                  <Form.Item
+                    name="username"
+                    label="User Name"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input the username!",
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Enter your user name" />
+                  </Form.Item>
+                  <p className="text-[red] mt-[-20px]">{matchedUsererrorMsg}</p>
+                  <Form.Item
+                    label="Email"
+                    name="email"
+                   
+                    rules={[
+                      { required: true, message: "Please input the email!"},
+                      { validator: validateEmail },
+                    ]}
+                  >
+                    <Input placeholder="Enter your email" />
+                  </Form.Item>
+                  <p className="text-[red] mt-[-20px]">{matchedEmailerrorMsg}</p>
 
-                <Form.Item
-                  label="Password"
-                  name="password"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input the password!",
-                    },
-                  ]}
-                >
-                  <Input placeholder="Password" />
-                </Form.Item>
-
-                <div className="select-partner-type mt-3">
-                  <Form.Item label="Select User " name="usertype">
-                    <Select
-                      value={selectvalue}
-                      onChange={handleChange}
-                      showSearch
-                      style={{
-                        width: 200,
-                      }}
-                      placeholder="Search to Select"
-                      defaultValue="user"
-                      optionFilterProp="children"
-                      filterOption={(input, option) =>
-                        (option?.label ?? "").includes(input)
+                  <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input the password!",
+                      },
+                    ]}
+                  >
+                   <Input.Password
+                      className="bg-[#f1f4f7] border-none py-[8px]"
+                      placeholder="Enter your password" 
+                      iconRender={(visible) =>
+                        visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
                       }
-                      filterSort={(optionA, optionB) =>
-                        (optionA?.label ?? "")
-                          .toLowerCase()
-                          .localeCompare((optionB?.label ?? "").toLowerCase())
-                      }
-                      options={[
-                        {
-                          value: "user",
-                          label: "User",
-                        },
-                        {
-                          value: "moderator",
-                          label: "Moderator",
-                        },
-                        {
-                          value: "admin",
-                          label: "Admin",
-                        },
-                      ]}
                     />
                   </Form.Item>
-                </div>
-                {errorMsg?.map((item, index) => {
-                  return <p className="text-[red] mt-2">{item?.msg}</p>;
-                })}
 
-                <p className="text-[red] mt-3">{matchederrorMsg}</p>
+                  <div className="select-partner-type mt-3">
+                    <Form.Item label="Select User " name="usertype">
+                      <Select
+                        value={selectvalue}
+                        onChange={handleChange}
+                        showSearch
+                        style={{
+                          width: 200,
+                        }}
+                        placeholder="Search to Select"
+                        defaultValue="user"
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                          (option?.label ?? "").includes(input)
+                        }
+                        filterSort={(optionA, optionB) =>
+                          (optionA?.label ?? "")
+                            .toLowerCase()
+                            .localeCompare((optionB?.label ?? "").toLowerCase())
+                        }
+                        options={[
+                          {
+                            value: "user",
+                            label: "User",
+                          },
+                          {
+                            value: "moderator",
+                            label: "HR",
+                          },
+                          {
+                            value: "admin",
+                            label: "Admin",
+                          },
+                        ]}
+                      />
+                    </Form.Item>
+                  </div>
+                  {errorMsg?.map((item, index) => {
+                    return <p className="text-[red] mt-2">{item?.msg}</p>;
+                  })}
 
-                <Form.Item className="mt-3">
-                  <button
-                    onClick={sendDatatoApp}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm"
-                  >
-                    Signup
-                  </button>
-                </Form.Item>
-              </Form>
+                  <p className="text-[red] mt-3">{matchederrorMsg}</p>
+
+                  <Form.Item className="mt-3">
+                    <button
+                      onClick={sendDatatoApp}
+                      className="bg-[#6941C6] w-full hover:bg-[#7f5fc7] text-white font-bold py-2 px-4 rounded-lg mt-3"
+                    >
+                      Signup
+                    </button>
+                  </Form.Item>
+                </Form>
+              </div>
 
               <h4>
                 Already have an account?
-                <Link to="/" className="text-[blue] cursor-pointer">
+                <Link to="/login" className="text-[blue] cursor-pointer">
                   Sign In
                 </Link>{" "}
               </h4>

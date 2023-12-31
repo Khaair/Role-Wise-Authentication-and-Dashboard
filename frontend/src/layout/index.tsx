@@ -5,8 +5,9 @@ import { Menu, MenuItem, Sidebar, SubMenu } from "react-pro-sidebar";
 import { Link } from "react-router-dom";
 import avatar from "../assets/img/avatar.png";
 import storage from "redux-persist/es/storage";
+import { useSelector } from "react-redux";
 
-const Layout = ({ children }:any) => {
+const Layout = ({ children }: any) => {
   const [isExpanded, setIsExpanded] = useState(true);
   function handleToggle() {
     setIsExpanded(!isExpanded);
@@ -16,11 +17,14 @@ const Layout = ({ children }:any) => {
     try {
       storage.removeItem("persist:root");
       sessionStorage.removeItem("persist:root");
-      window.location.href = "/";
+      window.location.href = "/login";
     } catch (e) {
       console.error(e);
     }
   };
+
+  const tokenData = useSelector((state) => state?.auth?.tokenData);
+
   return (
     <>
       <div className="admin-header shadow-md bg-[white]">
@@ -44,7 +48,7 @@ const Layout = ({ children }:any) => {
                   />
                 </svg>
                 <h2 className="ml-3  font-inter text-4xl font-bold text-[#4E5D78] font-inter">
-                  Stack
+                SM
                 </h2>
               </div>
             </Link>
@@ -260,91 +264,244 @@ const Layout = ({ children }:any) => {
         </div>
       </div>
       <div className="admin-sidebar">
-        <Sidebar collapsed={!isExpanded}>
-          <Menu>
-            <MenuItem
-              component={<Link to="/dashboard">Dashboard</Link>}
-              active={window.location.pathname === "/"}
-              icon={
-                <svg
-                  id="Group_1"
-                  data-name="Group 1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16.594"
-                  height="16.168"
-                  viewBox="0 0 24.594 26.168"
-                >
-                  <rect
-                    id="Rectangle_6"
-                    data-name="Rectangle 6"
-                    width="10.356"
-                    height="12.395"
-                    rx="1"
-                    transform="translate(0)"
-                    fill="#28A0F7"
-                  />
-                  <rect
-                    id="Rectangle_9"
-                    data-name="Rectangle 9"
-                    width="10.356"
-                    height="11.018"
-                    rx="1"
-                    transform="translate(0 15.15)"
-                    fill="#e6e6e6"
-                  />
-                  <rect
-                    id="Rectangle_7"
-                    data-name="Rectangle 7"
-                    width="11.65"
-                    height="12.395"
-                    rx="1"
-                    transform="translate(12.944)"
-                    fill="#e6e6e6"
-                  />
-                  <rect
-                    id="Rectangle_8"
-                    data-name="Rectangle 8"
-                    width="11.65"
-                    height="11.018"
-                    rx="1"
-                    transform="translate(12.944 15.15)"
-                    fill="#e6e6e6"
-                  />
-                </svg>
-              }
-            >
-              <Link to="/dashboard">
-                {" "}
-                <span className="text-[#28A0F7] font-bold">Dashboard</span>
-              </Link>
-            </MenuItem>
-            <SubMenu label="Sub menu" icon={<TbDeviceImacQuestion />}>
-              <MenuItem>
-                <Link to="/dashboard">Menu item</Link>
+        {tokenData?.roles?.join("").toString() === "ROLE_ADMIN" && (
+          <Sidebar collapsed={!isExpanded}>
+            <Menu>
+              <MenuItem
+                component={<Link to="/dashboard">Dashboard</Link>}
+                active={window.location.pathname === "/"}
+                icon={
+                  <svg
+                    id="Group_1"
+                    data-name="Group 1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16.594"
+                    height="16.168"
+                    viewBox="0 0 24.594 26.168"
+                  >
+                    <rect
+                      id="Rectangle_6"
+                      data-name="Rectangle 6"
+                      width="10.356"
+                      height="12.395"
+                      rx="1"
+                      transform="translate(0)"
+                      fill="#28A0F7"
+                    />
+                    <rect
+                      id="Rectangle_9"
+                      data-name="Rectangle 9"
+                      width="10.356"
+                      height="11.018"
+                      rx="1"
+                      transform="translate(0 15.15)"
+                      fill="#e6e6e6"
+                    />
+                    <rect
+                      id="Rectangle_7"
+                      data-name="Rectangle 7"
+                      width="11.65"
+                      height="12.395"
+                      rx="1"
+                      transform="translate(12.944)"
+                      fill="#e6e6e6"
+                    />
+                    <rect
+                      id="Rectangle_8"
+                      data-name="Rectangle 8"
+                      width="11.65"
+                      height="11.018"
+                      rx="1"
+                      transform="translate(12.944 15.15)"
+                      fill="#e6e6e6"
+                    />
+                  </svg>
+                }
+              >
+                <Link to="/dashboard">
+                  {" "}
+                  <span className="text-[#28A0F7] font-bold">Dashboard</span>
+                </Link>
               </MenuItem>
-            </SubMenu>
-            <SubMenu label="Sub menu" icon={<TbDeviceImacQuestion />}>
-              <MenuItem>
-                <Link to="/dashboard">Menu item</Link>
+
+              <MenuItem icon={<TbDeviceImacQuestion />}>
+                <Link to="/admin">
+                  <span>Admin</span>
+                </Link>
               </MenuItem>
-            </SubMenu>
-            <SubMenu label="Sub menu" icon={<TbDeviceImacQuestion />}>
-              <MenuItem>
-                <Link to="/dashboard">Menu item</Link>
+
+              <SubMenu label="Admin menu" icon={<TbDeviceImacQuestion />}>
+                <MenuItem>
+                  <Link to="/add-user">Add user</Link>
+                </MenuItem>
+              </SubMenu>
+
+              <SubMenu
+                onClick={() => logout()}
+                label="Log out"
+                icon={<TbDeviceImacQuestion />}
+              ></SubMenu>
+            </Menu>
+          </Sidebar>
+        )}
+
+        {tokenData?.roles?.join("").toString() === "ROLE_MODERATOR" && (
+          <Sidebar collapsed={!isExpanded}>
+            <Menu>
+              <MenuItem
+                component={<Link to="/dashboard">Dashboard</Link>}
+                active={window.location.pathname === "/"}
+                icon={
+                  <svg
+                    id="Group_1"
+                    data-name="Group 1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16.594"
+                    height="16.168"
+                    viewBox="0 0 24.594 26.168"
+                  >
+                    <rect
+                      id="Rectangle_6"
+                      data-name="Rectangle 6"
+                      width="10.356"
+                      height="12.395"
+                      rx="1"
+                      transform="translate(0)"
+                      fill="#28A0F7"
+                    />
+                    <rect
+                      id="Rectangle_9"
+                      data-name="Rectangle 9"
+                      width="10.356"
+                      height="11.018"
+                      rx="1"
+                      transform="translate(0 15.15)"
+                      fill="#e6e6e6"
+                    />
+                    <rect
+                      id="Rectangle_7"
+                      data-name="Rectangle 7"
+                      width="11.65"
+                      height="12.395"
+                      rx="1"
+                      transform="translate(12.944)"
+                      fill="#e6e6e6"
+                    />
+                    <rect
+                      id="Rectangle_8"
+                      data-name="Rectangle 8"
+                      width="11.65"
+                      height="11.018"
+                      rx="1"
+                      transform="translate(12.944 15.15)"
+                      fill="#e6e6e6"
+                    />
+                  </svg>
+                }
+              >
+                <Link to="/dashboard">
+                  {" "}
+                  <span className="text-[#28A0F7] font-bold">Dashboard</span>
+                </Link>
               </MenuItem>
-            </SubMenu>
-            <SubMenu label="Sub menu" icon={<TbDeviceImacQuestion />}>
-              <MenuItem>
-                <Link to="/dashboard">Menu item</Link>
+              <MenuItem icon={<TbDeviceImacQuestion />}>
+                <Link to="/hr">
+                  <span>HR</span>
+                </Link>
               </MenuItem>
-            </SubMenu>
-            <SubMenu
-              onClick={() => logout()}
-              label="Log out"
-              icon={<TbDeviceImacQuestion />}
-            ></SubMenu>
-          </Menu>
-        </Sidebar>
+              <SubMenu label="HR menu" icon={<TbDeviceImacQuestion />}>
+                <MenuItem>
+                  <Link to="/add-user">Add user</Link>
+                </MenuItem>
+              </SubMenu>
+
+              <SubMenu
+                onClick={() => logout()}
+                label="Log out"
+                icon={<TbDeviceImacQuestion />}
+              ></SubMenu>
+            </Menu>
+          </Sidebar>
+        )}
+
+        {tokenData?.roles?.join("").toString() === "ROLE_USER" && (
+          <Sidebar collapsed={!isExpanded}>
+            <Menu>
+              <MenuItem
+                component={<Link to="/dashboard">Dashboard</Link>}
+                active={window.location.pathname === "/"}
+                icon={
+                  <svg
+                    id="Group_1"
+                    data-name="Group 1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16.594"
+                    height="16.168"
+                    viewBox="0 0 24.594 26.168"
+                  >
+                    <rect
+                      id="Rectangle_6"
+                      data-name="Rectangle 6"
+                      width="10.356"
+                      height="12.395"
+                      rx="1"
+                      transform="translate(0)"
+                      fill="#28A0F7"
+                    />
+                    <rect
+                      id="Rectangle_9"
+                      data-name="Rectangle 9"
+                      width="10.356"
+                      height="11.018"
+                      rx="1"
+                      transform="translate(0 15.15)"
+                      fill="#e6e6e6"
+                    />
+                    <rect
+                      id="Rectangle_7"
+                      data-name="Rectangle 7"
+                      width="11.65"
+                      height="12.395"
+                      rx="1"
+                      transform="translate(12.944)"
+                      fill="#e6e6e6"
+                    />
+                    <rect
+                      id="Rectangle_8"
+                      data-name="Rectangle 8"
+                      width="11.65"
+                      height="11.018"
+                      rx="1"
+                      transform="translate(12.944 15.15)"
+                      fill="#e6e6e6"
+                    />
+                  </svg>
+                }
+              >
+                <Link to="/dashboard">
+                  {" "}
+                  <span className="text-[#28A0F7] font-bold">Dashboard</span>
+                </Link>
+              </MenuItem>
+              <MenuItem icon={<TbDeviceImacQuestion />}>
+                <Link to="/users">
+                  <span>Users</span>
+                </Link>
+              </MenuItem>
+              <SubMenu label="User menu" icon={<TbDeviceImacQuestion />}>
+                <MenuItem>
+                  <Link to="/add-user">Users</Link>
+                </MenuItem>
+              </SubMenu>
+
+              <SubMenu
+                onClick={() => logout()}
+                label="Log out"
+                icon={<TbDeviceImacQuestion />}
+              ></SubMenu>
+            </Menu>
+          </Sidebar>
+        )}
       </div>
       <div
         className={

@@ -3,7 +3,7 @@ const router = express.Router();
 const crudModel = require("../models/crud");
 const { check, validationResult } = require("express-validator");
 
-router.get("/show", async (req, res) => {
+router.get("/show-user", async (req, res) => {
   try {
     let data = await crudModel.find();
     res.send(data);
@@ -13,11 +13,13 @@ router.get("/show", async (req, res) => {
 });
 
 router.post(
-  "/save",
+  "/save-user",
   [
-    check("title").not().isEmpty().withMessage("Title is required"),
-    check("author").not().isEmpty().withMessage("Author is required"),
-    check("body").not().isEmpty().withMessage("Body is required"),
+    check("name").not().isEmpty().withMessage("name is required"),
+    check("email").not().isEmpty().withMessage("email is required"),
+    check("phone").not().isEmpty().withMessage("phone is required"),
+    check("nid").not().isEmpty().withMessage("nid is required"),
+    check("dob").not().isEmpty().withMessage("dob is required"),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -26,9 +28,11 @@ router.post(
     }
     try {
       const crudData = new crudModel({
-        title: req.body.title,
-        author: req.body.author,
-        body: req.body.body,
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
+        nid: req.body.nid,
+        dob: req.body.dob,
       });
       const savedData = await crudData.save();
       res.status(200).json({
@@ -43,7 +47,7 @@ router.post(
 );
 
 // Get Single information
-router.route("/showSIngle/:id").get(async (req, res, next) => {
+router.route("/show-single-user/:id").get(async (req, res, next) => {
   try {
     let data = await crudModel.findById(req.params.id);
     if (!data) {
@@ -58,7 +62,7 @@ router.route("/showSIngle/:id").get(async (req, res, next) => {
   }
 });
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete-user/:id", async (req, res) => {
   try {
     let data = await crudModel.deleteOne({ _id: req.params.id });
     if (!data) {
@@ -74,11 +78,13 @@ router.delete("/delete/:id", async (req, res) => {
 });
 
 router.post(
-  "/update/:id",
+  "/update-user/:id",
   [
-    check("title").not().isEmpty().withMessage("Title is required"),
-    check("author").not().isEmpty().withMessage("Author is required"),
-    check("body").not().isEmpty().withMessage("Body is required"),
+    check("name").not().isEmpty().withMessage("name is required"),
+    check("email").not().isEmpty().withMessage("email is required"),
+    check("phone").not().isEmpty().withMessage("phone is required"),
+    check("nid").not().isEmpty().withMessage("nid is required"),
+    check("dob").not().isEmpty().withMessage("dob is required"),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -89,9 +95,11 @@ router.post(
       let updatee = await crudModel.findByIdAndUpdate(
         { _id: req.params.id },
         {
-          title: req.body.title,
-          author: req.body.author,
-          body: req.body.body,
+          name: req.body.name,
+          email: req.body.email,
+          phone: req.body.phone,
+          nid: req.body.nid,
+          dob: req.body.dob,
         },
         { new: true }
       );
