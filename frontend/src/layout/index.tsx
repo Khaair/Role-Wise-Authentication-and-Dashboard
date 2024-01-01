@@ -30,7 +30,7 @@ const Layout = ({ children }: any) => {
       <div className="admin-header shadow-md bg-[white]">
         <div className="top-header-container">
           <div className="top-header-inner-content">
-            <Link to="/">
+            <Link to="/dashboard">
               <div className="flex items-center p-[22px]">
                 {/* <img src={logo} alt="Logo" /> */}
                 <svg
@@ -48,7 +48,7 @@ const Layout = ({ children }: any) => {
                   />
                 </svg>
                 <h2 className="ml-3  font-inter text-4xl font-bold text-[#4E5D78] font-inter">
-                SM
+                LOGO
                 </h2>
               </div>
             </Link>

@@ -6,15 +6,15 @@ table{
 #customers td,
 #customers th {
   border-bottom: 1px solid #ddd;
-  padding: 16px;
+  padding: 13px;
 
 }
 
 
 
-#customers tr:hover {
-  background-color: #ddd;
-}
+// #customers tr:hover {
+//   background-color: #ddd;
+// }
 
 #customers th {
   padding-top: 12px;
@@ -41,4 +41,8 @@ table{
       border: none !important;
     }
   }
+}
+
+.ant-btn-primary{
+  background-color: #1677ff !important;
 }
