@@ -48,7 +48,7 @@ const Layout = ({ children }: any) => {
                   />
                 </svg>
                 <h2 className="ml-3  font-inter text-4xl font-bold text-[#4E5D78] font-inter">
-                SM
+                LOGO
                 </h2>
               </div>
             </Link>

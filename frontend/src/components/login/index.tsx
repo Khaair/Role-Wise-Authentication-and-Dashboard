@@ -70,11 +70,11 @@ function Login() {
                   />
                 </svg>
                 <h2 className="ml-3  font-inter text-2xl font-bold text-[#4E5D78] font-inter">
-                SM Fintech
+                Company Name
                 </h2>
               </a>
               <h4 className="text-lg  leading-tight tracking-tight text-gray-900">
-                Sign in to continue with SM Fintech
+                Sign in to continue with Company Name
               </h4>
               <div className="form-wrapper-area">
                 <Form form={form} layout="vertical">
