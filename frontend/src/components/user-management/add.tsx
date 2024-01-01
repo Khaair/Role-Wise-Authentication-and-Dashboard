@@ -1,9 +1,9 @@
-import { Button, DatePicker, Form, Input, Modal } from "antd";
+import { Button, DatePicker, Form, Input, Modal, notification } from "antd";
 import { useState } from "react";
 import { AppstoreOutlined } from "@ant-design/icons";
 import { addUserHandler } from "../../api/users-list";
 import { useSelector } from "react-redux";
-
+import { CheckCircleOutlined } from "@ant-design/icons";
 const AddUser = ({ fetch }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
@@ -48,7 +48,7 @@ const AddUser = ({ fetch }) => {
               nid: "",
               dob: "",
             });
-            // openNotification(res?.message);
+            openNotification();
           } else if (res?.statusCode === 400 && res?.status === "error") {
             setLoading(false);
             setError(res?.errors?.[0]?.msg?.en);
@@ -67,22 +67,26 @@ const AddUser = ({ fetch }) => {
 
   const tokenData = useSelector((state) => state?.auth?.tokenData);
 
-  const validateEmail = (rule, value, callback) => {
-    const emailRegex = /^[A-Za-z0-9+_.-]+@(.+)$/;
-    if (!emailRegex.test(value)) {
-      callback('Invalid email address');
-    } else {
-      callback();
-    }
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotification = () => {
+    api.open({
+      message: "User created Successfully!",
+      description: "Now you can find this user in user table.",
+      icon: <CheckCircleOutlined style={{ color: "#108ee9" }} />,
+    });
   };
 
   return (
     <>
+      {contextHolder}
       <div className="flex justify-between">
         <div className="flex items-center">
           <AppstoreOutlined style={{ fontSize: "20px", color: "#28A0F7" }} />
           <div className="ml-2">
-            <h3 className="text-lg font-bold">User management</h3>
+            <h3 className="text-lg font-bold text-[#28A0F7]">
+              User management
+            </h3>
           </div>
         </div>
         <div>
@@ -90,7 +94,7 @@ const AddUser = ({ fetch }) => {
           tokenData?.roles?.join("").toString() === "ROLE_MODERATOR" ? (
             <button
               onClick={showModal}
-              className="bg-[#E8F2FC] px-4 py-2 font-bold text-base text-[#28A0F7] rounded"
+              className="bg-[#E8F2FC] px-4 py-2 font-bold text-base text-[#28A0F7] rounded hover:bg-[#0b5394] hover:text-[white] "
             >
               Add User
             </button>
@@ -106,6 +110,7 @@ const AddUser = ({ fetch }) => {
         onCancel={handleCancel}
         width={900}
         footer={false}
+        destroyOnClose={true}
       >
         <div className="form-area mt-3">
           <div className="container">
@@ -118,22 +123,18 @@ const AddUser = ({ fetch }) => {
                     rules={[
                       {
                         required: true,
-                        message: "Please input your name!",
+                        message: "Name is required",
                       },
                     ]}
                   >
-                    <Input placeholder="Name" />
+                    <Input placeholder="Enter your name" />
                   </Form.Item>
                   <Form.Item
-                  
                     name="email"
                     label="Email"
-                    rules={[
-                      { required: true, message: 'Email is required' },
-                      { validator: validateEmail },
-                    ]}
+                    rules={[{ required: true, message: "Email is required" }]}
                   >
-                    <Input placeholder="Email" />
+                    <Input type="email" placeholder="Enter your email" />
                   </Form.Item>
 
                   <Form.Item
@@ -142,11 +143,11 @@ const AddUser = ({ fetch }) => {
                     rules={[
                       {
                         required: true,
-                        message: "Please input your phone number!",
+                        message: "Phone number is required!",
                       },
                     ]}
                   >
-                    <Input placeholder="Phone number" />
+                    <Input placeholder="Enter your phone number" />
                   </Form.Item>
 
                   <Form.Item
@@ -155,11 +156,11 @@ const AddUser = ({ fetch }) => {
                     rules={[
                       {
                         required: true,
-                        message: "Please input your nid!",
+                        message: "NID is required!",
                       },
                     ]}
                   >
-                    <Input placeholder="NID" />
+                    <Input placeholder="Enter your NID" />
                   </Form.Item>
                   <Form.Item
                     name="dob"
@@ -167,7 +168,7 @@ const AddUser = ({ fetch }) => {
                     rules={[
                       {
                         required: true,
-                        message: "Please input your date of birth!",
+                        message: "Date of birth is required",
                       },
                     ]}
                   >
@@ -177,9 +178,9 @@ const AddUser = ({ fetch }) => {
                   <p className="text-[red mb-2]">{getError}</p>
 
                   <Form.Item>
-                    <Button type="primary" ghost onClick={handleSubmit}>
+                    <button  className="bg-[#E8F2FC] px-4 py-2 font-bold text-base text-[#28A0F7] rounded hover:bg-[#0b5394] hover:text-[white] "  onClick={handleSubmit}>
                       Submit
-                    </Button>
+                    </button>
                   </Form.Item>
                 </Form>
               </div>

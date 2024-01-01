@@ -23,7 +23,14 @@ const MainRoutes = () => {
       </Routes>
 
       <Routes>
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
       </Routes>
 
       <Routes>

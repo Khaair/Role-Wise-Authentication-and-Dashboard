@@ -14,6 +14,9 @@ function SignUp() {
   const [matchedUsererrorMsg, setMatchedUserErrorMsg] = useState("");
   const [matchederrorMsg, setMatchedErrorMsg] = useState("");
 
+
+
+
   const handleChange = (newValue: any) => {
     setSelectValue(newValue);
   };
@@ -66,29 +69,21 @@ function SignUp() {
     });
   };
 
-  const validateEmail = (rule, value, callback) => {
-    const emailRegex = /^[A-Za-z0-9+_.-]+@(.+)$/;
-    if (!emailRegex.test(value)) {
-      callback('Invalid email address');
-    } else {
-      callback();
-    }
-  };
 
   return (
     <>
       {contextHolder}
       <section>
-        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 bg-[#F1F4F7]">
           <div className="w-full bg-white rounded-lg shadow-xl md:mt-0 sm:max-w-md xl:p-0">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
               <a
                 href="#"
-                className="flex items-center mb-6 text-2xl font-semibold text-gray-900"
+                className="flex items-center mb-3 text-2xl font-semibold text-gray-900"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="51"
+                  width="32"
                   height="32"
                   viewBox="0 0 51 32"
                   fill="none"
@@ -100,13 +95,13 @@ function SignUp() {
                     fill="#9E7AF4"
                   />
                 </svg>
-                <h2 className="ml-3  font-inter text-4xl font-bold text-[#4E5D78] font-inter">
+                <h2 className="ml-3  font-inter text-2xl font-bold text-[#4E5D78] font-inter">
                 SM Fintech
                 </h2>
               </a>
-              <h2 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+              <h4 className="text-lg  leading-tight tracking-tight text-gray-900">
                 Sign up to join with SM Fintech
-              </h2>
+              </h4>
               <div className="form-wrapper-area">
                 <Form form={form} layout="vertical">
                   <Form.Item
@@ -125,13 +120,11 @@ function SignUp() {
                   <Form.Item
                     label="Email"
                     name="email"
-                   
                     rules={[
                       { required: true, message: "Please input the email!"},
-                      { validator: validateEmail },
                     ]}
                   >
-                    <Input placeholder="Enter your email" />
+                    <Input type="email" placeholder="Enter your email" />
                   </Form.Item>
                   <p className="text-[red] mt-[-20px]">{matchedEmailerrorMsg}</p>
 
@@ -208,7 +201,7 @@ function SignUp() {
                 </Form>
               </div>
 
-              <h4>
+              <h4 className="text-lg">
                 Already have an account?
                 <Link to="/login" className="text-[blue] cursor-pointer">
                   Sign In
